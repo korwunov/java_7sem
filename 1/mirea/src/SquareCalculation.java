@@ -13,10 +13,10 @@ public class SquareCalculation {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.print("Введите число для возведения в квадрат (или 'exit' для выхода): ");
+            System.out.print("Введите число для возведения в квадрат (или 'q' для выхода): ");
             String input = scanner.nextLine();
 
-            if (input.equalsIgnoreCase("exit")) {
+            if (input.equalsIgnoreCase("q")) {
                 break;
             }
 

@@ -41,13 +41,11 @@ public class GoodsController {
     }
 
     @MessageMapping("goodsChannel")
-    public Flux<Good> goodsChannel(Flux<Good> goods) {
-        Flux.fromIterable(repository.saveAll(
-                Objects.requireNonNull(goods.collectList().block()))
-        );
-        return goods.flatMap(
-                good -> Mono.fromCallable(() -> repository.save(good))
-        ).collectList().flatMapMany(Flux::fromIterable);
+    public Flux<Good> goodChannel(Flux<Good> goods){
+        return goods.flatMap(good -> Mono.fromCallable(() ->
+                        repository.save(good)))
+                .collectList()
+                .flatMapMany(Flux::fromIterable);
     }
 
 }

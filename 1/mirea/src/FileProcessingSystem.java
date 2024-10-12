@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -20,7 +21,7 @@ class File {
 
     @Override
     public String toString() {
-        return "File{" +
+        return "File {" +
                 "fileType='" + fileType + '\'' +
                 ", fileSize=" + fileSize +
                 '}';
@@ -39,7 +40,8 @@ class FileGenerator implements Runnable {
     public void run() {
         while (true) {
             try {
-                String fileType = generateRandomFileType();
+                String[] fileTypes = {"XML", "JSON", "XLS"};
+                String fileType = fileTypes[random.nextInt(3)];
                 int fileSize = random.nextInt(91) + 10;
                 File file = new File(fileType, fileSize);
 
@@ -52,11 +54,6 @@ class FileGenerator implements Runnable {
                 break;
             }
         }
-    }
-
-    private String generateRandomFileType() {
-        String[] fileTypes = {"XML", "JSON", "XLS"};
-        return fileTypes[random.nextInt(fileTypes.length)];
     }
 }
 
@@ -108,8 +105,7 @@ public class FileProcessingSystem {
         Thread xmlProcessor = new Thread(new FileProcessor(queue, "XML"));
         Thread jsonProcessor = new Thread(new FileProcessor(queue, "JSON"));
         Thread xlsProcessor = new Thread(new FileProcessor(queue, "XLS"));
-
-        // я сказала стартуем
+        
         xmlProcessor.start();
         jsonProcessor.start();
         xlsProcessor.start();

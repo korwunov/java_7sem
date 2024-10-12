@@ -22,6 +22,7 @@ public class DirectoryListener {
         );
 
         getInitialDirectoryState(directoryToListen);
+
         WatchKey key = dirListener.take();
         while (true) {
             for (WatchEvent<?> event : key.pollEvents()) {
