@@ -17,7 +17,7 @@ public class CO2Sensor extends Observable<Integer> {
     public void sendCo2() {
         new Thread(() -> {
             while (true) {
-                subject.onNext(new Random().nextInt(41, 100));
+                subject.onNext(new Random().nextInt(30, 100));
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {

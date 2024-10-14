@@ -17,7 +17,7 @@ public class TemperatureSensor extends Observable<Integer> {
     public void sendTemperature() {
         new Thread(() -> {
             while (true) {
-                subject.onNext(new Random().nextInt(5, 40));
+                subject.onNext(new Random().nextInt(15, 30));
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {

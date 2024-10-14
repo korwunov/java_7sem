@@ -1,23 +1,29 @@
 package org.temperatureObserver;
 
 import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 public class Alarm implements Observer<Integer> {
-    private final int TEMPERATURE_LIMIT = 20;
-    private final int CO2_LIMIT = 60;
+    private final int TEMPERATURE_LIMIT = 25;
+    private final int CO2_LIMIT = 70;
 
     public int temperature = 0;
     public int co2 = 0;
 
     @Override
-    public void onSubscribe(Disposable d) {
-        System.out.println("Новый subscriber для " + d);
+    public void onSubscribe(@NonNull Disposable d) {
+        System.out.println("Новый subscriber");
     }
 
     @Override
     public void onNext(Integer value) {
-        if (value <= 30) { temperature = value; } else { co2 = value; }
+        if (value <= 30) {
+            temperature = value;
+        }
+        else {
+            co2 = value;
+        }
         check();
     }
 
@@ -36,7 +42,7 @@ public class Alarm implements Observer<Integer> {
     }
 
     @Override
-    public void onError(Throwable e) {
+    public void onError(@NonNull Throwable e) {
         e.printStackTrace();
     }
 

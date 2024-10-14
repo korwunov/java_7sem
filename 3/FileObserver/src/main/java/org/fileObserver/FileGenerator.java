@@ -5,7 +5,7 @@ import io.reactivex.schedulers.Schedulers;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileGenerator {
-    private static final AtomicInteger counter = new AtomicInteger(0);
+
     public Observable<File> generateFile() {
         return Observable
                 .fromCallable(() -> {
