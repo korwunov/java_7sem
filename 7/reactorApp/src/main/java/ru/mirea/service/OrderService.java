@@ -9,6 +9,7 @@ import ru.mirea.entity.OrderDto;
 import ru.mirea.entity.Orders;
 
 import ru.mirea.entity.Pizza;
+import ru.mirea.mapper.OrderMapper;
 import ru.mirea.repo.OrderRepository;
 import ru.mirea.repo.PizzaRepository;
 
@@ -17,10 +18,12 @@ import java.util.Set;
 @Service
 public class OrderService {
 
+    private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final PizzaRepository pizzaRepository;
 
-    public OrderService(OrderRepository orderRepository, PizzaRepository pizzaRepository) {
+    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository, PizzaRepository pizzaRepository) {
+        this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.pizzaRepository = pizzaRepository;
     }
@@ -38,9 +41,7 @@ public class OrderService {
     }
 
     public Mono<Orders> createOrder(OrderDto dto) {
-        //TODO маппер
-        Orders orders = new Orders();
-        return Mono.just(orderRepository.save(orders));
+        return Mono.just(orderRepository.save(orderMapper.fromDtoToEntity(dto)));
     }
 
     public Mono<Void> deleteOrderById(Long id) {
@@ -58,7 +59,7 @@ public class OrderService {
                     Pizza pizza = null;
                     try {
                         pizza = pizzaRepository.findById(pizzaId)
-                                .orElseThrow(() -> new Exception(""));
+                                .orElseThrow(() -> new Exception("Не найдена пицца с id: " + pizzaId));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -80,13 +81,12 @@ public class OrderService {
 
     // Пример преобразования потока:
     public Flux<Orders> findAllOrdersWithTotalCost() {
-        //TODO сохранить общую стоимость
         return findAllOrders()
                 .flatMap(order -> {
                     return calculateTotalCost(order)
                             .map(totalCost -> {
                                 order.setTotalCost(totalCost);
-                                return order;
+                                return orderRepository.save(order);
                             });
                 });
     }
@@ -105,14 +105,12 @@ public class OrderService {
     public Flux<Orders> findOrdersByStatusWithBackpressure(String status, Pageable pageable) {
         return Flux.fromIterable(orderRepository.findAll(pageable))
                 .filter(order -> order.getStatus().equalsIgnoreCase(status))
-                // Ограничение количества элементов, обрабатываемых одновременно
                 .onBackpressureBuffer(10)
                 .doOnNext(order -> {
-                    // Эмуляция долгой операции
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
-                        // Обработка прерывания потока
+                        e.printStackTrace();
                     }
                 });
     }

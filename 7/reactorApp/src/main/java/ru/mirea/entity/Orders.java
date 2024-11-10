@@ -2,12 +2,14 @@ package ru.mirea.entity;
 
 import java.security.Timestamp;
 import java.sql.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,8 +37,7 @@ public class Orders {
     private String customerName;
     private String status;
     private Double totalCost;
-    //TODO сделать localDateTime
-    private Timestamp createdAt;
+    private LocalDateTime createdAt =  LocalDateTime.now();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -44,4 +46,9 @@ public class Orders {
             inverseJoinColumns = @JoinColumn(name = "pizza_id")
     )
     private Set<Pizza> pizzas = new HashSet<Pizza>();
+
+    @PrePersist
+    private void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

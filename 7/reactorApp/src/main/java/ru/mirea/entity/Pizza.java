@@ -22,7 +22,4 @@ public class Pizza {
     private Long id;
     private String name;
     private Double price;
-
-   /* @ManyToMany(mappedBy = "pizzas")
-    private Set<Orders> orders_list = new HashSet<Orders>();*/
 }

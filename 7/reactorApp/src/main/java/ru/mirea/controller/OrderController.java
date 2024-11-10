@@ -20,6 +20,13 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @GetMapping("/backpressure")
+    public Flux<Orders> backpressureGetOrders(@RequestParam("status") String status,
+                                              @RequestParam(value = "page", defaultValue = "0") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size){
+        return orderService.findOrdersByStatusWithBackpressure(status, PageRequest.of(page, size));
+    }
+
     @GetMapping
     public Flux<Orders> getAllOrders(@RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "size", defaultValue = "10") int size) {
